@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/menu.css"; // Ensure menu.css is imported
 import auth from "../lib/auth-helper.js";
 import brandLogo from "../assets/images/brand.png";
-import { products } from "../data/products.js";
+import { getAllProducts } from "../lib/api-menu.js";
 import Menu1 from "../assets/images/menu1.jpg";
 import Menu2 from "../assets/images/menu2.jpg";
 
@@ -17,6 +17,7 @@ export default function Menu({ cart = [], setCart = () => { } }) {
   const lastYRef = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
+  const [products, setProducts] = useState([]);
 
 
 
@@ -24,6 +25,15 @@ export default function Menu({ cart = [], setCart = () => { } }) {
     const handleStorage = () => setSession(auth.isAuthenticated());
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+  // Load products
+  useEffect(() => {
+    const loadProducts = async () => {
+      const menuItems = await getAllProducts();
+      setProducts(menuItems);
+    };
+    loadProducts();
   }, []);
 
   // Nav zoom effect on scroll
@@ -149,9 +159,12 @@ export default function Menu({ cart = [], setCart = () => { } }) {
                   </Link>
                 </li>
                 <li><Link to="/location">Location</Link></li>
-                <li><a href="#">Sitemap</a></li>
+                <li><Link to="/sitemap">Sitemap</Link></li>
                 {session?.user ? (
                   <>
+                    {session.user.role === "manager" && (
+                      <li><Link to="/manager/menu" style={{ background: '#ff6b35', padding: '5px 15px', borderRadius: '5px' }}>Manager</Link></li>
+                    )}
                     <li><Link to="/users">&#128100;</Link></li>
                     <li><a href="#" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Logout</a></li>
                   </>
@@ -194,6 +207,24 @@ export default function Menu({ cart = [], setCart = () => { } }) {
               <p className="description">{product.description}</p>
               <div className="food-item-footer">
                 <p className="price">${product.price.toFixed(2)}</p>
+                                {session?.user?.role === "manager" && (
+                                  <button
+                                    style={{
+                                      background: '#ff6b35',
+                                      color: 'white',
+                                      border: 'none',
+                                      padding: '8px 15px',
+                                      borderRadius: '5px',
+                                      cursor: 'pointer',
+                                      marginRight: '10px',
+                                      fontSize: '14px',
+                                      fontWeight: 'bold'
+                                    }}
+                                    onClick={() => navigate('/manager/menu')}
+                                  >
+                                    ✏️ Edit Menu
+                                  </button>
+                                )}
                 <button
                   className="btn-add-cart"
                   onClick={() => {
@@ -228,11 +259,11 @@ export default function Menu({ cart = [], setCart = () => { } }) {
           <div className="info-item">
             <img src={brandLogo} alt="Brand Logo" />
             <nav className="info-links">
-              <a href="#">About</a>
-              <a href="#">Menu</a>
-              <a href="#">Order</a>
-              <Link to="/location">Location</Link>
-              <a href="#">Sitemap</a>
+                <li><Link to="/about">About</Link></li>
+                <li><Link to="/menu">Menu</Link></li>
+                <li><Link to="/orders">Orders</Link></li>
+                <li><Link to="/location">Location</Link></li>
+                <li><Link to="/sitemap">Sitemap</Link></li>
             </nav>
           </div>
 

@@ -41,14 +41,14 @@ export const products = [
     category: "Pho"
   },
   
-  // Savory Dishes
+  // salty
   {
     id: 4,
     name: "Crispy Spring Rolls",
     price: 8.99,
     description: "Golden fried spring rolls with vegetables and pork",
     image: salty1g,
-    category: "Savory Dishes"
+    category: "salty"
   },
   {
     id: 5,
@@ -56,7 +56,7 @@ export const products = [
     price: 10.99,
     description: "Marinated pork skewers with Vietnamese herbs",
     image: salty2g,
-    category: "Savory Dishes"
+    category: "salty"
   },
   {
     id: 6,
@@ -64,17 +64,17 @@ export const products = [
     price: 11.99,
     description: "Fragrant lemongrass chicken with steamed rice",
     image: salty3g,
-    category: "Savory Dishes"
+    category: "salty"
   },
   
-  // Mixed Platters
+  // mixed
   {
     id: 7,
     name: "Vietnamese Mixed Platter",
     price: 15.99,
     description: "Assorted Vietnamese favorites on one plate",
     image: mixed1g,
-    category: "Mixed Platters"
+    category: "mixed"
   },
   {
     id: 8,
@@ -82,7 +82,7 @@ export const products = [
     price: 14.99,
     description: "Combination of grilled meats with broken rice",
     image: mixed2g,
-    category: "Mixed Platters"
+    category: "mixed"
   },
   {
     id: 9,
@@ -90,17 +90,17 @@ export const products = [
     price: 16.99,
     description: "Chef's selection of signature dishes",
     image: mixed3g,
-    category: "Mixed Platters"
+    category: "mixed"
   },
   
-  // Beverages
+  // drinks
   {
     id: 10,
     name: "Vietnamese Iced Coffee",
     price: 4.99,
     description: "Strong coffee with condensed milk over ice",
     image: drink1g,
-    category: "Beverages"
+    category: "drinks"
   },
   {
     id: 11,
@@ -108,7 +108,7 @@ export const products = [
     price: 3.99,
     description: "Refreshing natural coconut water",
     image: drink2g,
-    category: "Beverages"
+    category: "drinks"
   },
   {
     id: 12,
@@ -116,17 +116,17 @@ export const products = [
     price: 2.99,
     description: "Traditional jasmine or green tea",
     image: drink3g,
-    category: "Beverages"
+    category: "drinks"
   },
   
-  // Desserts
+  // desserts
   {
     id: 13,
     name: "Sweet Che",
     price: 5.99,
     description: "Traditional Vietnamese sweet dessert soup",
     image: dessert1g,
-    category: "Desserts"
+    category: "desserts"
   },
   {
     id: 14,
@@ -134,7 +134,7 @@ export const products = [
     price: 6.99,
     description: "Moist Vietnamese banana cake",
     image: dessert2g,
-    category: "Desserts"
+    category: "desserts"
   },
   {
     id: 15,
@@ -142,6 +142,6 @@ export const products = [
     price: 5.99,
     description: "Creamy coconut caramel flan",
     image: dessert3g,
-    category: "Desserts"
+    category: "desserts"
   }
 ];

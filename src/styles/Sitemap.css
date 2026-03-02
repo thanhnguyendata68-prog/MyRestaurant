@@ -1,0 +1,376 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/*Top Bar */
+.top-bar {
+  background-color: whitesmoke;
+  padding: 5px 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+/*Header */
+.main-header {
+  background-color: rgb(189, 91, 16);
+  padding: 15px 0;
+  transform-origin: top center;
+  transition: padding 250ms ease, box-shadow 250ms ease;
+}
+
+.header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  height: 80px;
+  transition: height 250ms ease;
+}
+
+/* Navbar minimize on scroll */
+.top-bar.scroll-min .main-header,
+.top-bar.scroll-zoom-out .main-header {
+  padding: 8px 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.top-bar.scroll-min .logo img,
+.top-bar.scroll-zoom-out .logo img {
+  height: 60px;
+}
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+}
+
+.nav-menu a {
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* Sitemap Container */
+.sitemap-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-top: 120px;
+}
+
+/* Main Content */
+.sitemap-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+/* Hero Section */
+.sitemap-hero {
+  text-align: center;
+  margin-bottom: 4rem;
+  animation: fadeIn 0.6s ease-in;
+}
+
+.sitemap-hero h1 {
+  font-size: 3rem;
+  color: rgb(189, 91, 16);
+  margin-bottom: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sitemap-hero p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Sitemap Content */
+.sitemap-content {
+  margin-bottom: 4rem;
+}
+
+.sitemap-section {
+  margin-bottom: 3rem;
+  animation: slideUp 0.6s ease-out;
+}
+
+.sitemap-section h2 {
+  font-size: 2rem;
+  color: rgb(189, 91, 16);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid rgb(189, 91, 16);
+  display: inline-block;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.sitemap-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.sitemap-link-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.sitemap-link-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgb(189, 91, 16);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.sitemap-link-card:hover::before {
+  transform: scaleX(1);
+}
+
+.sitemap-link-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.sitemap-link-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: rgb(189, 91, 16);
+  font-weight: bold;
+}
+
+.sitemap-link-card p {
+  color: #555;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.link-arrow {
+  font-size: 1.5rem;
+  color: rgb(189, 91, 16);
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  transition: transform 0.3s ease;
+}
+
+.sitemap-link-card:hover .link-arrow {
+  transform: translateX(5px);
+}
+
+/* Quick Links Section */
+.sitemap-quick-links {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 3rem;
+}
+
+.sitemap-quick-links h2 {
+  font-size: 1.8rem;
+  color: rgb(189, 91, 16);
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.quick-links-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.quick-link {
+  background: rgb(229, 124, 44);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 15px;
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.quick-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+/* Footer */
+.footer-container {
+  background-color: rgb(189, 91, 16);
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.social-icons {
+  margin-top: 10px;
+}
+
+.social-icons a {
+  margin: 0 10px;
+}
+
+.social-icons img {
+  width: 30px;
+  height: 30px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+}
+
+.modal-content h2 {
+  color: rgb(189, 91, 16);
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.modal-content p {
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.btn-confirm,
+.btn-cancel,
+.confirm-btn,
+.cancel-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm,
+.confirm-btn {
+  background: rgb(189, 91, 16);
+  color: white;
+}
+
+.btn-confirm:hover,
+.confirm-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.btn-cancel,
+.cancel-btn {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.btn-cancel:hover,
+.cancel-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .nav-menu {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .sitemap-hero h1 {
+    font-size: 2rem;
+  }
+
+  .sitemap-links-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quick-links-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

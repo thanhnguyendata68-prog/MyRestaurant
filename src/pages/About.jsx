@@ -58,10 +58,10 @@ export default function About() {
 
   const galleryCategories = [
     "Pho", "Pho", "Pho",
-    "Savory Dishes", "Savory Dishes", "Savory Dishes",
-    "Mixed Platters", "Mixed Platters", "Mixed Platters",
-    "Beverages", "Beverages", "Beverages",
-    "Desserts", "Desserts", "Desserts"
+    "salty", "salty", "salty",
+    "mixed", "mixed", "mixed",
+    "drinks", "drinks", "drinks",
+    "desserts", "desserts", "desserts"
   ];
 
   const moveEstablish = (dir) => {
@@ -202,7 +202,7 @@ export default function About() {
                 <li><Link to="/menu">Menu</Link></li>
                 <li><Link to="/orders">Orders</Link></li>
                 <li><Link to="/location">Location</Link></li>
-                <li><a href="#">Sitemap</a></li>
+                <li><Link to="/sitemap">Sitemap</Link></li>
                 {session?.user ? (
                   <>
                     <li><Link to="/users">&#128100;</Link></li>

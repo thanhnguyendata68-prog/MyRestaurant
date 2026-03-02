@@ -245,7 +245,7 @@ export default function Home() {
                 <li><Link to="/menu">Menu</Link></li>
                 <li><Link to="/orders">Orders</Link></li>
                 <li><Link to="/location">Location</Link></li>
-                <li><a href="#">Sitemap</a></li>
+                <li><Link to="/sitemap">Sitemap</Link></li>
                 {session?.user ? (
                   <>
                     <li><Link to="/users">&#128100;</Link></li>
@@ -427,11 +427,11 @@ export default function Home() {
           <div className="info-item">
             <img src={brandLogo} alt="Brand Logo" />
             <nav className="info-links">
-              <a href="#">About</a>
-              <a href="#">Menu</a>
-              <a href="#">Order</a>
+              <Link to="/about">About</Link>
+              <Link to="/menu">Menu</Link>
+              <Link to="/orders">Order</Link>
               <Link to="/location">Location</Link>
-              <a href="#">Sitemap</a>
+              <Link to="/sitemap">Sitemap</Link>
             </nav>
           </div>
 

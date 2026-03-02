@@ -45,6 +45,7 @@ export const create = async (user) => {
     dateOfBirth: user.dateOfBirth,
     phone: user.phone,
     address: user.address,
+    role: user.role || "customer", // Default role is customer
     created: new Date().toISOString(),
   };
   users.push(newUser);
@@ -109,3 +110,29 @@ export const clearUsers = async () => {
   saveUsers([]);
   return { message: "All users cleared" };
 };
+
+// Initialize default manager account if none exists
+export const initializeDefaultManager = () => {
+  const users = loadUsers();
+  const hasManager = users.some((u) => u.role === "manager");
+  
+  if (!hasManager) {
+    const defaultManager = {
+      _id: crypto.randomUUID(),
+      name: "Manager",
+      email: "manager@bepviet.com",
+      password: "manager123", // In production, this should be hashed
+      dateOfBirth: "1990-01-01",
+      phone: "4161234567",
+      address: "123 Manager St, Toronto, ON",
+      role: "manager",
+      created: new Date().toISOString(),
+    };
+    users.push(defaultManager);
+    saveUsers(users);
+    console.log("Default manager account created: manager@bepviet.com / manager123");
+  }
+};
+
+// Call this to ensure manager exists
+initializeDefaultManager();

@@ -7,6 +7,9 @@ import Users from "./user/Users";
 import Menu from "./pages/Menu";
 import OrdersPage from "./pages/OrdersPage";
 import Location from "./pages/Location";
+import Sitemap from "./pages/Sitemap";
+import ManagerDashboard from "./pages/ManagerDashboard";
+import MenuManagement from "./pages/MenuManagement";
 
 export default function App() {
   const [cart, setCart] = useState([]);
@@ -23,6 +26,9 @@ export default function App() {
         <Route path="/menu" element={<Menu cart={cart} setCart={setCart} />} />
         <Route path="/orders" element={<OrdersPage cart={cart} setCart={setCart} orders={orders} />} />
         <Route path="/location" element={<Location />} />
+        <Route path="/sitemap" element={<Sitemap />} />
+        <Route path="/manager/dashboard" element={<ManagerDashboard />} />
+        <Route path="/manager/menu" element={<MenuManagement />} />
       </Routes>
     </BrowserRouter>
   );
