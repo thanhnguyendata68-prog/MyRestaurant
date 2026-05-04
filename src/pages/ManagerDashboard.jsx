@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/ManagerDashboard.css";
 import auth from "../lib/auth-helper.js";
+import SocialIcons from "../components/SocialIcons.jsx";
 import brandLogo from "../assets/images/brand.png";
 import { getAllProducts } from "../lib/api-menu.js";
 import { list as listUsers } from "../user/api-user.js";
@@ -193,12 +194,7 @@ export default function ManagerDashboard() {
       <footer>
         <div className="footer-container">
           <p>&copy; 2024 Bep Viet Charlie. All rights reserved.</p>
-          <div className="social-icons">
-            <a href="#"><img src="icons/facebook.png" alt="Facebook" /></a>
-            <a href="#"><img src="icons/instagram.png" alt="Instagram" /></a>
-            <a href="#"><img src="icons/twitter.png" alt="Twitter" /></a>
-            <a href="#"><img src="icons/youtube.png" alt="YouTube" /></a>
-          </div>
+          <SocialIcons />
         </div>
       </footer>
     </>

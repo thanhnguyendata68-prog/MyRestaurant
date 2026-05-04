@@ -4,6 +4,7 @@ import brandLogo from "../assets/images/brand.png";
 import "../styles/Signup.css";
 import { create, signin } from "./api-user";
 import auth from "../lib/auth-helper.js";
+import SocialIcons from "../components/SocialIcons.jsx";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -359,12 +360,7 @@ export default function Signup() {
       <footer>
         <div className="footer-container">
           <p>&copy; 2024 Bep Viet Charlie. All rights reserved.</p>
-          <div className="social-icons">
-            <a href="#"><img src="icons/facebook.png" alt="Facebook" /></a>
-            <a href="#"><img src="icons/instagram.png" alt="Instagram" /></a>
-            <a href="#"><img src="icons/twitter.png" alt="Twitter" /></a>
-            <a href="#"><img src="icons/youtube.png" alt="YouTube" /></a>
-          </div>
+          <SocialIcons />
         </div>
       </footer>
     </>

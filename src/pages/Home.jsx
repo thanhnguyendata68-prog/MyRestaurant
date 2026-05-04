@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Home.css";
 import auth from "../lib/auth-helper.js";
+import SocialIcons from "../components/SocialIcons.jsx";
 
 // Import images
 import background1 from "../assets/images/background1.png";
@@ -131,6 +132,16 @@ export default function Home() {
   ];
   const [commentIndex, setCommentIndex] = useState(visibleComments);
   const [transitionEnabled, setTransitionEnabled] = useState(true);
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" ? window.innerWidth <= 768 : false
+  );
+
+  useEffect(() => {
+    const updateIsMobile = () => setIsMobile(window.innerWidth <= 768);
+    updateIsMobile();
+    window.addEventListener("resize", updateIsMobile);
+    return () => window.removeEventListener("resize", updateIsMobile);
+  }, []);
 
   const resetIndex = (index) => {
     if (index >= comments.length + visibleComments) {
@@ -404,10 +415,10 @@ export default function Home() {
           <div
             className="comment-content"
             style={{
-              transform: `translateX(-${commentIndex * 33.33}%)`,
-              transition: transitionEnabled ? "transform 0.5s ease-in-out" : "none",
+              transform: isMobile ? "none" : `translateX(-${commentIndex * 33.33}%)`,
+              transition: isMobile ? "none" : transitionEnabled ? "transform 0.5s ease-in-out" : "none",
             }}
-            onTransitionEnd={() => resetIndex(commentIndex)}
+            onTransitionEnd={() => !isMobile && resetIndex(commentIndex)}
           >
             {commentsWithClones.map((c, i) => (
               <div className="comment-item" key={i}>
@@ -421,8 +432,12 @@ export default function Home() {
           </div>
         </div>
 
-        <button className="comment-prev" onClick={() => moveComment(-1)}>❮</button>
-        <button className="comment-next" onClick={() => moveComment(1)}>❯</button>
+        {!isMobile && (
+          <>
+            <button className="comment-prev" onClick={() => moveComment(-1)}>❮</button>
+            <button className="comment-next" onClick={() => moveComment(1)}>❯</button>
+          </>
+        )}
       </section>
 
       {/* Gallery Section - Featured Dishes */}
@@ -499,12 +514,7 @@ export default function Home() {
       <footer>
         <div className="footer-container">
           <p>&copy; 2024 Bep Viet Charlie. All rights reserved.</p>
-          <div className="social-icons">
-            <a href="#"><img src="icons/facebook.png" alt="Facebook" /></a>
-            <a href="#"><img src="icons/instagram.png" alt="Instagram" /></a>
-            <a href="#"><img src="icons/twitter.png" alt="Twitter" /></a>
-            <a href="#"><img src="icons/youtube.png" alt="YouTube" /></a>
-          </div>
+          <SocialIcons />
         </div>
       </footer>
     </>

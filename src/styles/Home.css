@@ -455,11 +455,14 @@ body {
 }
 @media screen and (max-width: 768px) {
   .comment-content {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
   }
   .comment-item {
-    flex: 1 1 100%;
+    flex: 1 1 260px;
     max-width: 90%;
+    min-width: 260px;
     margin: 10px auto;
   }
 }

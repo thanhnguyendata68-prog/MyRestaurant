@@ -218,7 +218,7 @@ export default function About() {
       </div>
 
       <div className='Title-About'>
-        <img src={brandLogo} alt="Brand Logo" />
+        <img id="title-logo" src={brandLogo} alt="Brand Logo" />
         <div className="title"> OUR STORY
         </div>
         <h1>ABOUT BẾP VIỆT RESTAURANT</h1>
@@ -320,9 +320,7 @@ export default function About() {
       <div className="last-section">
         <h1> Our Philosophy</h1>
         <p>
-          At Bếp Việt, our core value is to provide great-tasting Vietnamese cuisine—both traditional and contemporary—paired with genuine service. We proudly stand behind our commitment to customer satisfaction, ensuring that every dish served reflects consistency, quality, and the heart of Vietnamese cooking. <br></br>
-
-          Bếp Việt is more than a restaurant—it is a place where tradition meets the future, and where every meal feels like home.
+          At Bếp Việt, our core value is to provide great-tasting Vietnamese cuisine—both traditional and contemporary—paired with genuine service. We proudly stand behind our commitment to customer satisfaction, ensuring that every dish served reflects consistency, quality, and the heart of Vietnamese cooking. Bếp Việt is more than a restaurant—it is a place where tradition meets the future, and where every meal feels like home.
         </p>
       </div>
       {/* Gallery Background */}
