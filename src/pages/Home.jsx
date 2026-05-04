@@ -40,7 +40,6 @@ import avatar8 from "../assets/images/avatar/avatar8.jpg";
 export default function Home() {
   const navigate = useNavigate();
   const [slideIndex, setSlideIndex] = useState(0);
-  const [commentIndex, setCommentIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxImageIndex, setLightboxImageIndex] = useState(0);
   const [session, setSession] = useState(auth.isAuthenticated());
@@ -201,23 +200,8 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [lightboxOpen, lightboxImageIndex]);
 
-  useEffect(() => {
-    if (!transitionEnabled) {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setTransitionEnabled(true);
-        });
-      });
-    }
-  }, [transitionEnabled]);
-
   const moveComment = (dir) => {
-    setCommentIndex((prev) => {
-      const next = prev + dir;
-      if (next < 0) return 0;
-      if (next > comments.length + visibleComments) return comments.length + visibleComments;
-      return next;
-    });
+    setCommentIndex((prev) => (prev + dir + comments.length) % comments.length);
   };
 
   const openLightbox = (index) => {
@@ -409,13 +393,9 @@ export default function Home() {
 
           <div
             className="comment-content"
-            style={{
-              transform: `translateX(-${commentIndex * 33.33}%)`,
-              transition: transitionEnabled ? "transform 0.5s ease-in-out" : "none",
-            }}
-            onTransitionEnd={() => resetIndex(commentIndex)}
+            style={{ transform: `translateX(-${commentIndex * 33.33}%)` }}
           >
-            {commentsWithClones.map((c, i) => (
+            {displayedComments.map((c, i) => (
               <div className="comment-item" key={i}>
                 <span className="star">★★★★★</span>
                 <p>{c.text}</p>
