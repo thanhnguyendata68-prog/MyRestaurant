@@ -124,6 +124,25 @@ export default function Home() {
     },
   ];
 
+  const visibleComments = 3;
+  const commentsWithClones = [
+    ...comments.slice(-visibleComments),
+    ...comments,
+    ...comments.slice(0, visibleComments),
+  ];
+  const [commentIndex, setCommentIndex] = useState(visibleComments);
+  const [transitionEnabled, setTransitionEnabled] = useState(true);
+
+  const resetIndex = (index) => {
+    if (index >= comments.length + visibleComments) {
+      setTransitionEnabled(false);
+      setCommentIndex(visibleComments);
+    } else if (index < visibleComments) {
+      setTransitionEnabled(false);
+      setCommentIndex(comments.length + index);
+    }
+  };
+
   // Auto-rotate slides
   useEffect(() => {
     const timer = setInterval(() => {
@@ -135,7 +154,7 @@ export default function Home() {
   // Auto-rotate comments
   useEffect(() => {
     const timer = setInterval(() => {
-      setCommentIndex((prev) => (prev + 1) % comments.length);
+      setCommentIndex((prev) => Math.min(prev + 1, comments.length + visibleComments));
     }, 4000);
     return () => clearInterval(timer);
   }, []);
@@ -182,8 +201,23 @@ export default function Home() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [lightboxOpen, lightboxImageIndex]);
 
+  useEffect(() => {
+    if (!transitionEnabled) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransitionEnabled(true);
+        });
+      });
+    }
+  }, [transitionEnabled]);
+
   const moveComment = (dir) => {
-    setCommentIndex((prev) => (prev + dir + comments.length) % comments.length);
+    setCommentIndex((prev) => {
+      const next = prev + dir;
+      if (next < 0) return 0;
+      if (next > comments.length + visibleComments) return comments.length + visibleComments;
+      return next;
+    });
   };
 
   const openLightbox = (index) => {
@@ -271,7 +305,7 @@ export default function Home() {
           <h2>
             <span className="script">Call Us</span> (+1)416 123 789
           </h2>
-          <h1 className="highlight">New Location</h1>
+          <h1 className="highlight">My Location</h1>
         </div>
       </section>
 
@@ -326,7 +360,7 @@ export default function Home() {
           <div className="cuisine-content">
             <h1>Fresh Ingredients, Unique Vietnamese Flavors</h1>
             <p className="content">At Bếp Việt Charlie, we take pride in using only the freshest ingredients to create authentic Vietnamese dishes. Our chefs expertly blend traditional recipes with modern techniques, ensuring every bite is a delightful experience.</p>
-            <button><a href="#">View Items</a></button>
+            <button><a href="#gallery">View Items</a></button>
           </div>
         </div>
       </section>
@@ -334,26 +368,34 @@ export default function Home() {
       {/* Cuisine Images Section */}
       <section className="cuisine-images">
         <div className="cuisine-photo">
-          <div className="cuisine-item1">
-            <img src={pho1} alt="Pho" />
+          <div className="cuisine-card">
+            <div className="cuisine-item cuisine-item1">
+              <img src={pho1} alt="Pho" />
+            </div>
+            <div className="cuisine-item cuisine-item2 cuisine-item-text">
+              <h2>Pho Beef</h2>
+              <p>Fresh Beef and noodles</p>
+            </div>
           </div>
-          <div className="cuisine-item1">
-            <h2>Pho Beef</h2>
-            <p>Fresh Beef and noodles</p>
+
+          <div className="cuisine-card">
+            <div className="cuisine-item cuisine-item3">
+              <img src={salty1} alt="Salty Dish" />
+            </div>
+            <div className="cuisine-item cuisine-item4 cuisine-item-text">
+              <h2>Wing Chicken</h2>
+              <p>Delicious salty flavors</p>
+            </div>
           </div>
-          <div className="cuisine-item1">
-            <img src={salty1} alt="Salty Dish" />
-          </div>
-          <div className="cuisine-item1">
-            <h2>Wing Chicken</h2>
-            <p>Delicious salty flavors</p>
-          </div>
-          <div className="cuisine-item1">
-            <img src={dessert1} alt="Sweet Dish" />
-          </div>
-          <div className="cuisine-item1">
-            <h2>Chocolate Baker</h2>
-            <p>Sweet and refreshing dessert</p>
+
+          <div className="cuisine-card">
+            <div className="cuisine-item cuisine-item5">
+              <img src={dessert1} alt="Sweet Dish" />
+            </div>
+            <div className="cuisine-item cuisine-item6 cuisine-item-text">
+              <h2>Chocolate Baker</h2>
+              <p>Sweet and refreshing dessert</p>
+            </div>
           </div>
         </div>
       </section>
@@ -367,9 +409,13 @@ export default function Home() {
 
           <div
             className="comment-content"
-            style={{ transform: `translateX(-${commentIndex * 33.33}%)` }}
+            style={{
+              transform: `translateX(-${commentIndex * 33.33}%)`,
+              transition: transitionEnabled ? "transform 0.5s ease-in-out" : "none",
+            }}
+            onTransitionEnd={() => resetIndex(commentIndex)}
           >
-            {comments.map((c, i) => (
+            {commentsWithClones.map((c, i) => (
               <div className="comment-item" key={i}>
                 <span className="star">★★★★★</span>
                 <p>{c.text}</p>
@@ -379,14 +425,14 @@ export default function Home() {
               </div>
             ))}
           </div>
-
-          <button className="comment-prev" onClick={() => moveComment(-1)}>❮</button>
-          <button className="comment-next" onClick={() => moveComment(1)}>❯</button>
         </div>
+
+        <button className="comment-prev" onClick={() => moveComment(-1)}>❮</button>
+        <button className="comment-next" onClick={() => moveComment(1)}>❯</button>
       </section>
 
       {/* Gallery Section - Featured Dishes */}
-      <section className="gallery">
+      <section className="gallery" id="gallery">
         <div className="gallery-container">
           <p className="word1">Featured Dishes</p>
           <span className="separator"></span>
