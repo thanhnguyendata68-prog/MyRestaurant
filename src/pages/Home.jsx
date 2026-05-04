@@ -153,10 +153,20 @@ export default function Home() {
   // Auto-rotate comments
   useEffect(() => {
     const timer = setInterval(() => {
-      setCommentIndex((prev) => Math.min(prev + 1, comments.length + visibleComments));
+      setCommentIndex((prev) => prev + 1);
     }, 4000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (!transitionEnabled) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setTransitionEnabled(true);
+        });
+      });
+    }
+  }, [transitionEnabled]);
 
   useEffect(() => {
     const handleStorage = () => setSession(auth.isAuthenticated());
@@ -201,7 +211,7 @@ export default function Home() {
   }, [lightboxOpen, lightboxImageIndex]);
 
   const moveComment = (dir) => {
-    setCommentIndex((prev) => (prev + dir + comments.length) % comments.length);
+    setCommentIndex((prev) => prev + dir);
   };
 
   const openLightbox = (index) => {
@@ -393,9 +403,13 @@ export default function Home() {
 
           <div
             className="comment-content"
-            style={{ transform: `translateX(-${commentIndex * 33.33}%)` }}
+            style={{
+              transform: `translateX(-${commentIndex * 33.33}%)`,
+              transition: transitionEnabled ? "transform 0.5s ease-in-out" : "none",
+            }}
+            onTransitionEnd={() => resetIndex(commentIndex)}
           >
-            {displayedComments.map((c, i) => (
+            {commentsWithClones.map((c, i) => (
               <div className="comment-item" key={i}>
                 <span className="star">★★★★★</span>
                 <p>{c.text}</p>
