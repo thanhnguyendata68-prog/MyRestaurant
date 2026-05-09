@@ -26,9 +26,9 @@ export const products = [
   },
   {
     id: 2,
-    name: "Classic Pho Ga",
+    name: "Classic Bun Mam",
     price: 11.99,
-    description: "Aromatic chicken pho with rice noodles",
+    description: "Beef and vegetables with stir-fried thin rice noodles.",
     image: pho2g,
     category: "Pho"
   },
@@ -44,25 +44,25 @@ export const products = [
   // salty
   {
     id: 4,
-    name: "Crispy Spring Rolls",
-    price: 8.99,
-    description: "Golden fried spring rolls with vegetables and pork",
+    name: "Grilled Pork Skewers",
+    price: 18.99,
+    description: "Skewered meat marinated with Vietnamese herbs and served with rice paper rolls.",
     image: salty1g,
     category: "salty"
   },
   {
     id: 5,
-    name: "Grilled Pork Skewers",
-    price: 10.99,
-    description: "Marinated pork skewers with Vietnamese herbs",
+    name: "Lemongrass Chicken",
+    price: 11.99,
+    description: "Fragrant lemongrass chicken with steamed rice",
     image: salty2g,
     category: "salty"
   },
   {
     id: 6,
-    name: "Lemongrass Chicken",
+    name: "Grilled fish",
     price: 11.99,
-    description: "Fragrant lemongrass chicken with steamed rice",
+    description: "Fragrant grilled fish with Vietnamese fermented carrots and daikons",
     image: salty3g,
     category: "salty"
   },
@@ -70,24 +70,24 @@ export const products = [
   // mixed
   {
     id: 7,
-    name: "Vietnamese Mixed Platter",
-    price: 15.99,
-    description: "Assorted Vietnamese favorites on one plate",
+    name: "Steamed rolled rice pancake",
+    price: 10.99,
+    description: "Steamed rice pancake filled with pork skin and bean sprouts, served with fresh herbs and dipping fish chili sauce",
     image: mixed1g,
     category: "mixed"
   },
   {
     id: 8,
-    name: "Traditional Rice Dishes",
-    price: 14.99,
-    description: "Combination of grilled meats with broken rice",
+    name: "Rice paper salad",
+    price: 11.99,
+    description: "Mixed rice paper salad is a dish consisting of small pieces of rice paper mixed with dried beef, dried shrimp, quail eggs, mango, coriander, chili sauce, shrimp salt, and a little kumquat.",
     image: mixed2g,
     category: "mixed"
   },
   {
     id: 9,
     name: "Chef's Special Combo",
-    price: 16.99,
+    price: 12.99,
     description: "Chef's selection of signature dishes",
     image: mixed3g,
     category: "mixed"
@@ -96,24 +96,24 @@ export const products = [
   // drinks
   {
     id: 10,
-    name: "Vietnamese Iced Coffee",
-    price: 4.99,
-    description: "Strong coffee with condensed milk over ice",
+    name: "Orange juice",
+    price: 3.99,
+    description: "Freshly squeezed orange juice",
     image: drink1g,
     category: "drinks"
   },
   {
     id: 11,
-    name: "Fresh Coconut Water",
+    name: "Vietnamese Iced Coffee",
     price: 3.99,
-    description: "Refreshing natural coconut water",
+    description: "Strong coffee with condensed milk over ice",
     image: drink2g,
     category: "drinks"
   },
   {
     id: 12,
-    name: "Vietnamese Tea",
-    price: 2.99,
+    name: "Vietnamese Boba Tea",
+    price: 3.99,
     description: "Traditional jasmine or green tea",
     image: drink3g,
     category: "drinks"
@@ -122,9 +122,9 @@ export const products = [
   // desserts
   {
     id: 13,
-    name: "Sweet Che",
+    name: "Chocolate Tapioca Pudding",
     price: 5.99,
-    description: "Traditional Vietnamese sweet dessert soup",
+    description: "Creamy chocolate pudding with chewy tapioca pearls",
     image: dessert1g,
     category: "desserts"
   },
@@ -138,9 +138,9 @@ export const products = [
   },
   {
     id: 15,
-    name: "Coconut Flan",
+    name: "Cream Caramel Flan with Chocolate Sauce and pannacotta",
     price: 5.99,
-    description: "Creamy coconut caramel flan",
+    description: "Rich and creamy caramel flan served with chocolate sauce and pannacotta",
     image: dessert3g,
     category: "desserts"
   }

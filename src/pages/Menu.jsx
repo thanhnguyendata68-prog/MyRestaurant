@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import "../styles/menu.css"; // Ensure menu.css is imported
+import "../styles/menu.css";
 import auth from "../lib/auth-helper.js";
 import SocialIcons from "../components/SocialIcons.jsx";
 import brandLogo from "../assets/images/brand.png";
 import { getAllProducts } from "../lib/api-menu.js";
 import Menu1 from "../assets/images/menu1.jpg";
 import Menu2 from "../assets/images/menu2.jpg";
-
-
 
 export default function Menu({ cart = [], setCart = () => { } }) {
   const navigate = useNavigate();
@@ -19,8 +17,9 @@ export default function Menu({ cart = [], setCart = () => { } }) {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [products, setProducts] = useState([]);
-
-
+  
+  // NEW: State for category filter
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     const handleStorage = () => setSession(auth.isAuthenticated());
@@ -69,6 +68,21 @@ export default function Menu({ cart = [], setCart = () => { } }) {
   const cancelLogout = () => {
     setShowLogoutModal(false);
   };
+
+  // 🔥 NEW: Dynamic categories based on real products in your database
+  const uniqueCategories = useMemo(() => {
+    if (!products.length) return ["All"];
+    
+    const cats = new Set(
+      products.map(product => product.category).filter(Boolean)
+    );
+    return ["All", ...Array.from(cats).sort()];
+  }, [products]);
+
+  // Filter products based on selected category
+  const filteredProducts = selectedCategory === "All"
+    ? products
+    : products.filter(product => product.category === selectedCategory);
 
   return (
     <>
@@ -178,8 +192,8 @@ export default function Menu({ cart = [], setCart = () => { } }) {
         </header>
       </div>
 
-      
       <div className="spacer" style={{ height: '100px', marginLeft: '150px' }}></div>
+
       {/* Menu Welcome Section */}
       <div className="menu-welcome">
         <div className="menu-container">
@@ -190,67 +204,86 @@ export default function Menu({ cart = [], setCart = () => { } }) {
         </div>
       </div>
 
-      {/* Food orders*/}
+      {/* Dynamic Category Filter Buttons */}
+      <div className="category-filters">
+        {uniqueCategories.map((category) => (
+          <button
+            key={category}
+            className={`filter-btn ${selectedCategory === category ? "active" : ""}`}
+            onClick={() => setSelectedCategory(category)}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+
+      {/* Food orders (filtered) */}
       <div className="food-orders">
-        {products.map((product) => (
-          <div key={product.id} className="food-item">
-            <div className="food-item-header">
-              <span className="category-badge">{product.category}</span>
-            </div>
-            <img
-              src={product.image}
-              alt={product.name}
-              style={{ width: "100%", height: "250px", objectFit: "cover" }}
-            />
-            <div className="food-item-body">
-              <h3 className="name">{product.name}</h3>
-              <p className="category">{product.category}</p>
-              <p className="description">{product.description}</p>
-              <div className="food-item-footer">
-                <p className="price">${product.price.toFixed(2)}</p>
-                                {session?.user?.role === "manager" && (
-                                  <button
-                                    style={{
-                                      background: '#ff6b35',
-                                      color: 'white',
-                                      border: 'none',
-                                      padding: '8px 15px',
-                                      borderRadius: '5px',
-                                      cursor: 'pointer',
-                                      marginRight: '10px',
-                                      fontSize: '14px',
-                                      fontWeight: 'bold'
-                                    }}
-                                    onClick={() => navigate('/manager/menu')}
-                                  >
-                                    ✏️ Edit Menu
-                                  </button>
-                                )}
-                <button
-                  className="btn-add-cart"
-                  onClick={() => {
-                    const existingItem = cart.find(item => item.id === product.id);
-                    if (existingItem) {
-                      setCart(cart.map(item => 
-                        item.id === product.id 
-                          ? { ...item, quantity: item.quantity + 1 }
-                          : item
-                      ));
-                      setToastMessage(`${product.name} quantity updated!`);
-                    } else {
-                      setCart([...cart, { ...product, quantity: 1 }]);
-                      setToastMessage(`${product.name} added to cart!`);
-                    }
-                    setShowToast(true);
-                    setTimeout(() => setShowToast(false), 3000);
-                  }}
-                >
-                  + Add to Cart
-                </button>
+        {filteredProducts.length === 0 ? (
+          <p style={{ textAlign: "center", padding: "40px", fontSize: "1.2rem", color: "#666" }}>
+            No items found in this category yet.
+          </p>
+        ) : (
+          filteredProducts.map((product) => (
+            <div key={product.id} className="food-item">
+              <div className="food-item-header">
+                <span className="category-badge">{product.category}</span>
+              </div>
+              <img
+                src={product.image}
+                alt={product.name}
+                style={{ width: "100%", height: "250px", objectFit: "cover" }}
+              />
+              <div className="food-item-body">
+                <h3 className="name">{product.name}</h3>
+                <p className="category">{product.category}</p>
+                <p className="description">{product.description}</p>
+                <div className="food-item-footer">
+                  <p className="price">${product.price.toFixed(2)}</p>
+                  {session?.user?.role === "manager" && (
+                    <button
+                      style={{
+                        background: '#ff6b35',
+                        color: 'white',
+                        border: 'none',
+                        padding: '8px 15px',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        marginRight: '10px',
+                        fontSize: '14px',
+                        fontWeight: 'bold'
+                      }}
+                      onClick={() => navigate('/manager/menu')}
+                    >
+                      ✏️ Edit Menu
+                    </button>
+                  )}
+                  <button
+                    className="btn-add-cart"
+                    onClick={() => {
+                      const existingItem = cart.find(item => item.id === product.id);
+                      if (existingItem) {
+                        setCart(cart.map(item => 
+                          item.id === product.id 
+                            ? { ...item, quantity: item.quantity + 1 }
+                            : item
+                        ));
+                        setToastMessage(`${product.name} quantity updated!`);
+                      } else {
+                        setCart([...cart, { ...product, quantity: 1 }]);
+                        setToastMessage(`${product.name} added to cart!`);
+                      }
+                      setShowToast(true);
+                      setTimeout(() => setShowToast(false), 3000);
+                    }}
+                  >
+                    + Add to Cart
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Information Section */}
@@ -260,11 +293,11 @@ export default function Menu({ cart = [], setCart = () => { } }) {
           <div className="info-item">
             <img src={brandLogo} alt="Brand Logo" />
             <nav className="info-links">
-                <li><Link to="/about">About</Link></li>
-                <li><Link to="/menu">Menu</Link></li>
-                <li><Link to="/orders">Orders</Link></li>
-                <li><Link to="/location">Location</Link></li>
-                <li><Link to="/sitemap">Sitemap</Link></li>
+              <li><Link to="/about">About</Link></li>
+              <li><Link to="/menu">Menu</Link></li>
+              <li><Link to="/orders">Orders</Link></li>
+              <li><Link to="/location">Location</Link></li>
+              <li><Link to="/sitemap">Sitemap</Link></li>
             </nav>
           </div>
 
