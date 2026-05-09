@@ -366,7 +366,9 @@ export default function About() {
             <img
               src={galleryImages[lightboxIndex]}
               alt="Gallery large"
-              style={{ transform: zoomed ? "scale(2)" : "scale(1)" }}
+              style={{ transform: zoomed ? "scale(2)" : "scale(1)" ,
+                        cursor: zoomed ? "zoom-out" : "zoom-in"
+              }}
               onClick={(e) => { e.stopPropagation(); toggleZoom(); }}
             />
           </div>
@@ -374,7 +376,7 @@ export default function About() {
           <button className="lightbox-save" onClick={(e) => { e.stopPropagation(); saveImage(); }}>Save</button>
         </div>
       )}
-
+      
     </>
   );
 }
