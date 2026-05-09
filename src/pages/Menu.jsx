@@ -12,6 +12,10 @@ export default function Menu({ cart = [], setCart = () => { } }) {
   const navigate = useNavigate();
   const [session, setSession] = useState(auth.isAuthenticated());
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // New : Modal to force sign-in before ordering
+  const [showSignInModal, setShowSignInModal] = useState(false);
+
   const [scrollClass, setScrollClass] = useState("scroll-zoom-in");
   const lastYRef = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const [showToast, setShowToast] = useState(false);
@@ -69,7 +73,31 @@ export default function Menu({ cart = [], setCart = () => { } }) {
     setShowLogoutModal(false);
   };
 
-  // 🔥 NEW: Dynamic categories based on real products in your database
+  // NEW : Handler that forces sign-in before adding to cart
+  const handleAddToCart = (product) => {
+    if (!session?.user) {
+      setShowSignInModal(true);
+      return;
+    } 
+
+  // Original cart logic (only runs if user is signed in)
+  const existingItem = cart.find(item => item.id === product.id);
+  if (existingItem) {
+    setCart(cart.map(item => 
+      item.id === product.id 
+        ? { ...item, quantity: item.quantity + 1 }
+        : item
+    ));
+    setToastMessage(`${product.name} quantity updated!`);
+  } else {
+    setCart([...cart, { ...product, quantity: 1 }]);
+    setToastMessage(`${product.name} added to cart!`);
+  }
+  setShowToast(true);
+  setTimeout(() => setShowToast(false), 3000);
+  };
+
+  //  NEW: Dynamic categories based on real products in your database
   const uniqueCategories = useMemo(() => {
     if (!products.length) return ["All"];
     
@@ -137,6 +165,26 @@ export default function Menu({ cart = [], setCart = () => { } }) {
         </div>
       )}
 
+
+      {/*NEW : Sign in Required Modal (forces customer to Sign in before ordering)*/}
+      {showSignInModal && (
+        <div className="modal-overlay" onClick={() => setShowSignInModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2>Sign In Required</h2>
+            <p>You must be signed in to add items to your cart and place an order</p>
+            <div className="modal-buttons">
+              <button className="btn-cancel" onClick={() => setShowSignInModal(false)}>Cancel</button>
+              <button className="btn-confirm"
+                onClick={() => {
+                  setShowSignInModal(false);
+                  navigate('/signup');
+                }} >
+                Sign In
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Top Bar and Header */}
       <div className={`top-bar ${scrollClass}`}>
         <header className="main-header">
@@ -261,20 +309,7 @@ export default function Menu({ cart = [], setCart = () => { } }) {
                   <button
                     className="btn-add-cart"
                     onClick={() => {
-                      const existingItem = cart.find(item => item.id === product.id);
-                      if (existingItem) {
-                        setCart(cart.map(item => 
-                          item.id === product.id 
-                            ? { ...item, quantity: item.quantity + 1 }
-                            : item
-                        ));
-                        setToastMessage(`${product.name} quantity updated!`);
-                      } else {
-                        setCart([...cart, { ...product, quantity: 1 }]);
-                        setToastMessage(`${product.name} added to cart!`);
-                      }
-                      setShowToast(true);
-                      setTimeout(() => setShowToast(false), 3000);
+                      handleAddToCart(product);
                     }}
                   >
                     + Add to Cart
