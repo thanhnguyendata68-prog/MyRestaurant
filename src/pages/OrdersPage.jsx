@@ -20,6 +20,11 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [orderError, setOrderError] = useState(null);
   const [showOrderForm, setShowOrderForm] = useState(false);
+
+  //NEW : Custom error modal state
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [customerInfo, setCustomerInfo] = useState({
     name: '',
     email: '',
@@ -78,6 +83,11 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const showError = (message) => {
+    setErrorMessage(message);
+    setShowErrorModal(true);
+  };
+
   const handleLogout = () => {
     setShowLogoutModal(true);
   };
@@ -118,7 +128,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
   const submitOrder = async () => {
     // Validate customer info
     if (!customerInfo.name || !customerInfo.email) {
-      alert('Please provide your name and email');
+      showError('Please provide your name and email');
       return;
     }
 
@@ -159,8 +169,9 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
       await fetchOrders();
     } catch (error) {
       console.error('Error submitting order:', error);
-      setOrderError(error.message || 'Failed to submit order. Please try again.');
-      alert('Failed to submit order: ' + (error.message || 'Unknown error'));
+      const msg = error.message || 'Failed to submit order. Please try again.';
+      setOrderError(msg);
+      showError(msg);
     } finally {
       setIsLoading(false);
     }
@@ -169,10 +180,10 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
   const applyCoupon = () => {
     if (couponCode.toUpperCase() === "WELCOME10") {
       setDiscount(0.1);
-      alert("Coupon applied! 10% discount added.");
+      showError("Coupon applied! 10% discount added.");
     } else {
       setDiscount(0);
-      alert("Invalid coupon code");
+      showError("Invalid coupon code");
     }
     setCouponCode("");
   };
@@ -289,6 +300,21 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
             <p>You can view your order history below.</p>
             <div className="modal-buttons">
               <button className="btn-confirm" onClick={closeCheckoutModal}>OK</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Custom Error Modal (replaces the ugly "localhost:5173 says" popup) */}
+      {showErrorModal && (
+        <div className="modal-overlay" onClick={() => setShowErrorModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 style={{ color: '#e74c3c' }}>Order Submission Failed</h2>
+            <p>{errorMessage}</p>
+            <div className="modal-buttons">
+              <button className="btn-confirm" onClick={() => setShowErrorModal(false)} style={{ background: '#e74c3c'}}>
+                OK
+              </button>
             </div>
           </div>
         </div>

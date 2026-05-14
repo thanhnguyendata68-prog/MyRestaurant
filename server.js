@@ -5,6 +5,10 @@ import dotenv from 'dotenv';
 import config from './config/config.js';
 import orderRoutes from './server/routes/order.routes.js';
 
+// The error querySrv ECONNREFUSED is still happening because of a DNS resolution issue on Windows (very common with mongodb+srv:// connections).
+import dns from 'dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
+
 dotenv.config();
 
 const app = express();
@@ -16,9 +20,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // MongoDB Connection
 mongoose.connect(config.mongoUri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  // Allow extra time for Atlas connection when network is slow
   serverSelectionTimeoutMS: 60000,
 })
 .then(() => {
