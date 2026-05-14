@@ -354,7 +354,7 @@ export default function About() {
             ))}
           </div>
 
-          <button className="view-more"><a href="#">Order Now</a></button>
+          <button className="view-more" onClick={() => navigate("/menu")}>Order Now</button>
         </div>
       </section>
 
