@@ -6,6 +6,7 @@ import SocialIcons from "../components/SocialIcons.jsx";
 import brandLogo from "../assets/images/brand.png";
 import { getAllProducts } from "../lib/api-menu.js";
 import { list as listUsers } from "../user/api-user.js";
+import { orderAPI } from "../lib/api-order.js";
 
 export default function ManagerDashboard() {
   const navigate = useNavigate();
@@ -16,6 +17,10 @@ export default function ManagerDashboard() {
     totalUsers: 0,
     categories: {},
   });
+  const [allOrders, setAllOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
     const user = auth.isAuthenticated();
@@ -25,13 +30,14 @@ export default function ManagerDashboard() {
     }
     setSession(user);
     loadStats();
+    loadAllOrders();
   }, []);
 
   const loadStats = async () => {
     try {
       const products = await getAllProducts();
       const users = await listUsers();
-      
+
       const categories = {};
       products.forEach((p) => {
         categories[p.category] = (categories[p.category] || 0) + 1;
@@ -44,6 +50,34 @@ export default function ManagerDashboard() {
       });
     } catch (error) {
       console.error("Error loading stats:", error);
+    }
+  };
+
+  const loadAllOrders = async () => {
+    try {
+      setOrdersLoading(true);
+      const response = await orderAPI.getAll(); // no filter = all orders
+      setAllOrders(response.orders || []);
+    } catch (error) {
+      console.error("Error loading orders:", error);
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      setUpdatingId(orderId);
+      await orderAPI.updateStatus(orderId, newStatus);
+      // Update local state immediately without refetching
+      setAllOrders(prev =>
+        prev.map(o => o._id === orderId ? { ...o, status: newStatus } : o)
+      );
+    } catch (error) {
+      console.error("Error updating order status:", error);
+      alert("Failed to update order status. Please try again.");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -180,13 +214,97 @@ export default function ManagerDashboard() {
               <h3>Manage Users</h3>
               <p>View and manage user accounts</p>
             </Link>
-
-            <Link to="/orders" className="action-card">
-              <div className="action-icon">📦</div>
-              <h3>View Orders</h3>
-              <p>Monitor and manage customer orders</p>
-            </Link>
           </div>
+        </div>
+      </div>
+
+      {/* ── Orders Management Section ── */}
+      <div className="manager-orders-section">
+        <div className="dashboard-container">
+          <div className="orders-mgmt-header">
+            <h2>📦 Order Management</h2>
+            <div className="orders-mgmt-controls">
+              <select
+                className="status-filter-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All Orders</option>
+                <option value="pending">Pending</option>
+                <option value="confirmed">Confirmed</option>
+                <option value="preparing">Preparing</option>
+                <option value="ready">Ready</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+              <button className="btn-refresh" onClick={loadAllOrders} disabled={ordersLoading}>
+                🔄 Refresh
+              </button>
+            </div>
+          </div>
+
+          {ordersLoading ? (
+            <div className="loading-state">
+              <div className="mgmt-spinner"></div>
+              <p>Loading orders...</p>
+            </div>
+          ) : allOrders.filter(o => statusFilter === 'all' || o.status === statusFilter).length === 0 ? (
+            <div className="empty-orders">
+              <span>📭</span>
+              <p>No orders{statusFilter !== 'all' ? ` with status "${statusFilter}"` : ''} found.</p>
+            </div>
+          ) : (
+            <div className="mgmt-orders-table-wrap">
+              <table className="mgmt-orders-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Update</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allOrders
+                    .filter(o => statusFilter === 'all' || o.status === statusFilter)
+                    .map((order) => (
+                      <tr key={order._id}>
+                        <td className="order-id-cell">#{order._id.slice(-6).toUpperCase()}</td>
+                        <td>{order.customerName}</td>
+                        <td>{order.email}</td>
+                        <td>{order.items?.length ?? 0} item(s)</td>
+                        <td>${order.total?.toFixed(2)}</td>
+                        <td>{new Date(order.createdAt).toLocaleDateString()}</td>
+                        <td>
+                          <span className={`mgmt-status-badge status-${order.status}`}>
+                            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                          </span>
+                        </td>
+                        <td>
+                          <select
+                            className="mgmt-status-select"
+                            value={order.status}
+                            disabled={updatingId === order._id}
+                            onChange={(e) => updateOrderStatus(order._id, e.target.value)}
+                          >
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="preparing">Preparing</option>
+                            <option value="ready">Ready</option>
+                            <option value="delivered">Delivered</option>
+                            <option value="cancelled">Cancelled</option>
+                          </select>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
 

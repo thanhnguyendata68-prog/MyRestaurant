@@ -322,3 +322,186 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Orders Management Section ── */
+.manager-orders-section {
+  background: #f0f0f0;
+  padding-bottom: 60px;
+}
+
+.orders-mgmt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.orders-mgmt-header h2 {
+  font-size: 1.8rem;
+  color: rgb(189, 91, 16);
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.orders-mgmt-controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.status-filter-select {
+  padding: 0.5rem 1rem;
+  border: 2px solid rgb(189, 91, 16);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-refresh {
+  padding: 0.5rem 1.2rem;
+  background: rgb(189, 91, 16);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: opacity 0.2s ease;
+}
+
+.btn-refresh:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Orders Table */
+.mgmt-orders-table-wrap {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mgmt-orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 0.9rem;
+}
+
+.mgmt-orders-table thead {
+  background: rgb(189, 91, 16);
+  color: white;
+}
+
+.mgmt-orders-table th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.mgmt-orders-table td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  vertical-align: middle;
+}
+
+.mgmt-orders-table tbody tr:hover {
+  background: #fdf3ea;
+}
+
+.order-id-cell {
+  font-family: monospace;
+  font-weight: bold;
+  color: rgb(189, 91, 16) !important;
+}
+
+/* Status Badges */
+.mgmt-status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.mgmt-status-badge.status-pending    { background: #fff3cd; color: #856404; }
+.mgmt-status-badge.status-confirmed  { background: #cfe2ff; color: #084298; }
+.mgmt-status-badge.status-preparing  { background: #fff3cd; color: #664d03; }
+.mgmt-status-badge.status-ready      { background: #d1e7dd; color: #0f5132; }
+.mgmt-status-badge.status-delivered  { background: #d1e7dd; color: #0a3622; }
+.mgmt-status-badge.status-cancelled  { background: #f8d7da; color: #842029; }
+
+/* Status Update Dropdown */
+.mgmt-status-select {
+  padding: 0.4rem 0.7rem;
+  border: 1.5px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background: white;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.mgmt-status-select:hover:not(:disabled) {
+  border-color: rgb(189, 91, 16);
+}
+
+.mgmt-status-select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading & Empty States */
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  color: #666;
+}
+
+.mgmt-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #eee;
+  border-top-color: rgb(189, 91, 16);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.empty-orders {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.empty-orders span {
+  font-size: 3rem;
+}
+
+.empty-orders p {
+  margin-top: 1rem;
+  color: #666;
+  font-size: 1rem;
+}

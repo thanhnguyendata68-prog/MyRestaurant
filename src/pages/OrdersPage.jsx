@@ -6,7 +6,7 @@ import SocialIcons from "../components/SocialIcons.jsx";
 import { orderAPI } from "../lib/api-order.js";
 import brandLogo from "../assets/images/brand.png";
 
-export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] }) {
+export default function OrdersPage({ cart = [], setCart = () => { }, orders = [] }) {
   const navigate = useNavigate();
   const [session, setSession] = useState(auth.isAuthenticated());
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -20,6 +20,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [orderError, setOrderError] = useState(null);
   const [showOrderForm, setShowOrderForm] = useState(false);
+  const [lastUsedEmail, setLastUsedEmail] = useState('');
 
   //NEW : Custom error modal state
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -46,16 +47,20 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
   }, [session]);
 
   // Fetch orders from backend
-  const fetchOrders = async () => {
+  // emailOverride: use a specific email (e.g. just after placing a guest order)
+  const fetchOrders = async (emailOverride) => {
     try {
       setLoadingOrders(true);
       setOrderError(null);
-      
+
+      // Priority: explicit override → session email → last used email
+      const email = emailOverride || session?.user?.email || lastUsedEmail;
+
       const filters = {};
-      if (session?.user?.email) {
-        filters.email = session.user.email;
+      if (email) {
+        filters.email = email;
       }
-      
+
       const response = await orderAPI.getAll(filters);
       setSavedOrders(response.orders || []);
     } catch (error) {
@@ -158,15 +163,18 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
       };
 
       const response = await orderAPI.create(orderData);
-      
+
+      // Remember the email used so we can filter order history
+      setLastUsedEmail(customerInfo.email);
+
       // Clear cart and form after successful order
       setCart([]);
       setCustomerInfo({ name: '', email: '', phone: '', address: '', notes: '' });
       setShowOrderForm(false);
       setShowCheckoutModal(true);
-      
-      // Refresh orders list
-      await fetchOrders();
+
+      // Refresh orders list using the email that was just used
+      await fetchOrders(customerInfo.email);
     } catch (error) {
       console.error('Error submitting order:', error);
       const msg = error.message || 'Failed to submit order. Please try again.';
@@ -235,7 +243,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
                 <input
                   type="text"
                   value={customerInfo.name}
-                  onChange={(e) => setCustomerInfo({...customerInfo, name: e.target.value})}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
                   required
                   placeholder="Enter your name"
                 />
@@ -245,7 +253,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
                 <input
                   type="email"
                   value={customerInfo.email}
-                  onChange={(e) => setCustomerInfo({...customerInfo, email: e.target.value})}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, email: e.target.value })}
                   required
                   placeholder="Enter your email"
                 />
@@ -255,7 +263,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
                 <input
                   type="tel"
                   value={customerInfo.phone}
-                  onChange={(e) => setCustomerInfo({...customerInfo, phone: e.target.value})}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, phone: e.target.value })}
                   placeholder="Enter your phone number"
                 />
               </div>
@@ -264,7 +272,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
                 <input
                   type="text"
                   value={customerInfo.address}
-                  onChange={(e) => setCustomerInfo({...customerInfo, address: e.target.value})}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, address: e.target.value })}
                   placeholder="Enter delivery address"
                 />
               </div>
@@ -272,7 +280,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
                 <label>Order Notes</label>
                 <textarea
                   value={customerInfo.notes}
-                  onChange={(e) => setCustomerInfo({...customerInfo, notes: e.target.value})}
+                  onChange={(e) => setCustomerInfo({ ...customerInfo, notes: e.target.value })}
                   placeholder="Any special instructions?"
                   rows="3"
                 />
@@ -312,7 +320,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
             <h2 style={{ color: '#e74c3c' }}>Order Submission Failed</h2>
             <p>{errorMessage}</p>
             <div className="modal-buttons">
-              <button className="btn-confirm" onClick={() => setShowErrorModal(false)} style={{ background: '#e74c3c'}}>
+              <button className="btn-confirm" onClick={() => setShowErrorModal(false)} style={{ background: '#e74c3c' }}>
                 OK
               </button>
             </div>
@@ -367,13 +375,13 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
               <div className="cart-items">
                 {cart.map((item) => (
                   <div key={item.id} className="cart-item">
-                    <img 
-                      src={getImageSrc(item.image)} 
+                    <img
+                      src={getImageSrc(item.image)}
                       alt={item.name}
-                      onError={(e) => { 
+                      onError={(e) => {
                         if (e.currentTarget.src !== DEFAULT_IMAGE) {
-                          e.currentTarget.src = DEFAULT_IMAGE; 
-                          e.currentTarget.onerror = null; 
+                          e.currentTarget.src = DEFAULT_IMAGE;
+                          e.currentTarget.onerror = null;
                         }
                       }}
                     />
@@ -489,7 +497,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
       <div className="order-history-section">
         <div className="cart-container">
           <h1>Your Order History</h1>
-          
+
           {loadingOrders ? (
             <div className="loading-state">
               <div className="loading-spinner"></div>
@@ -527,7 +535,7 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </span>
                   </div>
-                  
+
                   <div className="order-details">
                     <p><strong>Customer:</strong> {order.customerName}</p>
                     <p><strong>Email:</strong> {order.email}</p>
@@ -580,11 +588,11 @@ export default function OrdersPage({ cart = [], setCart = () => {}, orders = [] 
           <div className="info-item">
             <img src={brandLogo} alt="Brand Logo" />
             <nav className="info-links">
-                <li><Link to="/about">About</Link></li>
-                <li><Link to="/menu">Menu</Link></li>
-                <li><Link to="/orders">Orders</Link></li>
-                <li><Link to="/location">Location</Link></li>
-                <li><Link to="/sitemap">Sitemap</Link></li>
+              <li><Link to="/about">About</Link></li>
+              <li><Link to="/menu">Menu</Link></li>
+              <li><Link to="/orders">Orders</Link></li>
+              <li><Link to="/location">Location</Link></li>
+              <li><Link to="/sitemap">Sitemap</Link></li>
             </nav>
           </div>
 

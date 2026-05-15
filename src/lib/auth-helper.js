@@ -1,21 +1,21 @@
-// Minimal auth helper storing a mock JWT in localStorage.
+// Auth helper storing JWT in sessionStorage (per-tab, supports multi-account).
 
 const STORAGE_KEY = "jwt";
 
 const auth = {
   authenticate(jwt, cb) {
     if (typeof window === "undefined") return;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(jwt));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(jwt));
     if (typeof cb === "function") cb();
   },
   isAuthenticated() {
     if (typeof window === "undefined") return false;
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     return raw ? JSON.parse(raw) : false;
   },
   clearJWT(cb) {
     if (typeof window === "undefined") return;
-    localStorage.removeItem(STORAGE_KEY);
+    sessionStorage.removeItem(STORAGE_KEY);
     if (typeof cb === "function") cb();
   },
 };
