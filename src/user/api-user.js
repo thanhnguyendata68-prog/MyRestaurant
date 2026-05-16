@@ -2,6 +2,19 @@
 
 const STORAGE_KEY = "mr-users";
 
+// crypto.randomUUID() only works in secure contexts (HTTPS/localhost).
+// This fallback works everywhere including http://192.168.x.x
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  // Fallback UUID v4
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+};
+
 const loadUsers = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -38,7 +51,7 @@ export const create = async (user) => {
     return { error: "Email already registered" };
   }
   const newUser = {
-    _id: crypto.randomUUID(),
+    _id: generateId(),
     name: user.name,
     email: user.email,
     password: user.password,
@@ -118,7 +131,7 @@ export const initializeDefaultManager = () => {
   
   if (!hasManager) {
     const defaultManager = {
-      _id: crypto.randomUUID(),
+      _id: generateId(),
       name: "Manager",
       email: "manager@bepviet.com",
       password: "manager123", // In production, this should be hashed

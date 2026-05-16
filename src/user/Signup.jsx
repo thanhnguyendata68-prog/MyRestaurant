@@ -6,6 +6,17 @@ import { create, signin } from "./api-user";
 import auth from "../lib/auth-helper.js";
 import SocialIcons from "../components/SocialIcons.jsx";
 
+// Fallback for non-secure contexts (http://IP) where crypto.randomUUID is unavailable
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+  });
+};
+
 export default function Signup() {
   const navigate = useNavigate();
   const [isSignup, setIsSignup] = useState(true);
@@ -75,7 +86,7 @@ export default function Signup() {
         setStatus({ message: "", error: result.error });
         return;
       }
-      auth.authenticate({ token: crypto.randomUUID(), user: result }, () => {
+      auth.authenticate({ token: generateId(), user: result }, () => {
         setSession(auth.isAuthenticated());
         setStatus({ message: "✅ Signed up successfully! Welcome to our restaurant!", error: "" });
         // Redirect to home after 2 seconds
@@ -97,7 +108,7 @@ export default function Signup() {
         setStatus({ message: "", error: result.error });
         return;
       }
-      auth.authenticate({ token: crypto.randomUUID(), user: result }, () => {
+      auth.authenticate({ token: generateId(), user: result }, () => {
         setSession(auth.isAuthenticated());
         setStatus({ message: "✅ Signed in successfully! Welcome back!", error: "" });
         // Redirect to home after 2 seconds
